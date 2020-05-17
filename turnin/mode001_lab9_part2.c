@@ -17,7 +17,7 @@
  *              template or example code, is my own original work.
  */
 
-//DEMO: https://drive.google.com/open?id=1CZw3sm78BG6Y9OMVXn30mXXh18Qi_KZG
+//DEMO: https://drive.google.com/open?id=1Cp_vWEMcDgnbS9sqkNn3v7rr1tVmij1p
 
 #ifdef _SIMULATE_
 #include "simAVRHeader.h"
@@ -65,7 +65,6 @@ void PWM_off() {
 
 enum States{BEGIN, INIT, ADD, SUBTRACT, SOUND, STOP} state;
 
-unsigned char array = 0x00;
 int count = 0;
 unsigned char none = 0x00;
 double a[8] = {261.63, 293.66, 329.63, 349.23, 392.00, 440.00, 493.88, 523.25};
@@ -77,15 +76,15 @@ void Tick(){
 		break;
 
 		case INIT:
-		if((array) == 0x01){
+		if((~PINA & 0x07) == 0x01){
 			state = SOUND;
 			break;
 		}
-		else if((array) == 0x02){
+		else if((~PINA & 0x07) == 0x02){
 			state = ADD;
 			break;
 		}
-		else if((array) == 0x04){
+		else if((~PINA & 0x07) == 0x04){
 			state = SUBTRACT;
 			break;
 		}
@@ -108,7 +107,7 @@ void Tick(){
 		break;
 
 		case STOP: 
-		state = (array == 0x00) ? INIT : STOP;
+		state = ((~PINA & 0x07) == 0x00) ? INIT : STOP;
 		break;
 		
 		default:
@@ -177,7 +176,6 @@ int main(void){
 	state = BEGIN;
 
 	while(1){
-		array = ~PINA & 0x07;
 		Tick();
 	}
 
